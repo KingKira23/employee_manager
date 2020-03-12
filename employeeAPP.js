@@ -6,13 +6,13 @@ const connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
     user: "root",
-    password: process.env. ,
-    database: ""
+    password: process.env.MY_PASSWORD_IS_SAFE,
+    database: "employeeDB"
 })
 
 connection.connect((err) => {
     if (err) throw err;
-
+    employment()
 });
 function employment() {
 
@@ -20,22 +20,209 @@ function employment() {
         .prompt(
             {
                 type: "list",
-                message: "What would you like to look at",
-                choices: [
-                    "Departments",
-                    "Roles",
-                    "Employees"
-                ],
-                name: ""
-            }, {
-                type: "list",
                 message: "Would you like to Add, View, or Update",
                 choices: [
-                    "Departments",
-                    "Roles",
-                    "Employees"
+                    "Add",
+                    "View",
+                    "Update"
                 ],
-                name: ""
+                name: "selector"
             }
         )
+        .then((res) => {
+            if (res.selector === "Add") {
+                inquirer
+                    .prompt(
+                        {
+                            type: "list",
+                            message: "What are you looking to add.",
+                            choices: [
+                                "Departments",
+                                "Roles",
+                                "Employees"
+                            ],
+                            name: "adder"
+                        })
+                    .then((res) => {
+                        if (res.adder === "Departments") {
+                            inquirer
+                                .prompt([{
+                                    type: "input",
+                                    message: "What ID would like to give this department",
+                                    name: "id"
+                                }, {
+                                    type: "input",
+                                    message: "What name would like to give this department",
+                                    name: "departmentName"
+                                }])
+                                .then((res) => {
+                                    console.log("Inserting a new department...\n");
+                                    const query = connection.query(
+                                        "INSERT INTO department SET ?",
+                                        {
+                                            id: res.id,
+                                            department_name: res.departmentName,
+                                        },
+                                        function (err, res) {
+                                            if (err) throw err;
+                                            console.log(res.affectedRows + " department added!\n");
+                                        }
+                                    );
+                                })
+                        }
+                        else if (res.adder === "Roles") {
+                            inquirer
+                                .prompt([{
+                                    type: "input",
+                                    message: "What ID would like to give this role",
+                                    name: "id"
+                                }, {
+                                    type: "input",
+                                    message: "What name would like to give this role",
+                                    name: "roleName"
+                                }, {
+                                    type: "input",
+                                    message: "How much will this role make a year",
+                                    name: "salary"
+                                }, {
+                                    type: "checkbox",
+                                    message: "In what department will this role be",
+                                    choices: [
+                                        "placeholder",
+                                        "placeholder",
+                                        "placeholder"
+                                    ],
+                                    name: "department"
+                                }])
+                                .then((res) => {
+                                    console.log("Inserting a new department...\n");
+                                    const query = connection.query(
+                                        "INSERT INTO employee_role SET ?",
+                                        {
+                                            id: res.id,
+                                            title: res.roleName,
+                                            salary: res.salary,
+                                            department_id: res.department
+                                        },
+                                        function (err, res) {
+                                            if (err) throw err;
+                                            console.log(res.affectedRows + " product inserted!\n");
+                                            // Call updateProduct AFTER the INSERT completes
+                                            updateProduct();
+                                        }
+                                    );
+                                })
+                        }
+                        else if (res.adder === "Employees") {
+                            inquirer
+                                .prompt([{
+                                    type: "input",
+                                    message: "What is the ID of this new employee",
+                                    name: "id"
+                                }, {
+                                    type: "input",
+                                    message: "What is the first name of this new employee",
+                                    name: "employeeFName"
+                                }, {
+                                    type: "input",
+                                    message: "What is the first name of this new employee",
+                                    name: "employeeLName"
+                                }, {
+                                    type: "list",
+                                    message: "In what role will this person be placed",
+                                    choices: [
+                                        "placeholder",
+                                        "placeholder",
+                                        "placeholder"
+                                    ],
+                                    name: "role"
+                                }, {
+                                    type: "list",
+                                    message: "Who will be the manager",
+                                    choices: [
+                                        "placeholder",
+                                        "placeholder",
+                                        "placeholder"
+                                    ],
+                                    name: "manage"
+                                }])
+                                .then((res) => {
+                                    console.log("Inserting a new department...\n");
+                                    const query = connection.query(
+                                        "INSERT INTO department SET ?",
+                                        {
+                                            id: res.id,
+                                            first_name: res.employeeFName,
+                                            last_name: res.employeeLName,
+                                            role_id: res.role,
+                                            manager_id: res.manage
+                                        },
+                                        function (err, res) {
+                                            if (err) throw err;
+                                            console.log(res.affectedRows + " product inserted!\n");
+                                            // Call updateProduct AFTER the INSERT completes
+                                            updateProduct();
+                                        }
+                                    );
+                                })
+                        }
+                    })
+            }
+            else if (res.selector === "View") {
+                inquirer
+                    .prompt(
+                        {
+                            type: "list",
+                            message: "What would you like to view.",
+                            choices: [
+                                "Departments",
+                                "Roles",
+                                "Employees"
+                            ],
+                            name: "selector"
+                        }
+                    )
+                    .then((res) => {
+                        if (res.selector === "Departments") {
+
+                        }
+                        else if (res.selector === "Roles") {
+
+                        }
+                        else if (res.selector === "Employees") {
+
+                        }
+                    })
+            }
+            else if (res.selector === "Update") {
+                inquirer
+                    .prompt(
+                        {
+                            type: "list",
+                            message: "What would you like to update.",
+                            choices: [
+                                "Departments",
+                                "Roles",
+                                "Employees"
+                            ],
+                            name: "selector"
+                        }
+                    )
+                    .then((res) => {
+                        if (res.selector === "Departments") {
+
+                        }
+                        else if (res.selector === "Roles") {
+
+                        }
+                        else if (res.selector === "Employees") {
+
+                        }
+                    })
+            }
+        })
+}
+
+function createDepartment(res) {
+
 }

@@ -1,0 +1,24 @@
+{
+  "name": "employee_manager",
+  "version": "1.0.0",
+  "description": "a way to manage current and new employees",
+  "main": "employeeAPP.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KingKira23/employee_manager.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KingKira23/employee_manager/issues"
+  },
+  "homepage": "https://github.com/KingKira23/employee_manager#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "inquirer": "^7.1.0",
+    "mysql": "^2.18.1"
+  }
+}
