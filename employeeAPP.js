@@ -95,7 +95,7 @@ function employment() {
                                     name: "department"
                                 }])
                                 .then((res) => {
-                                    console.log("Inserting a new department...\n");
+                                    console.log("Inserting a new role...\n");
                                     const query = connection.query(
                                         "INSERT INTO employee_role SET ?",
                                         {
@@ -106,9 +106,7 @@ function employment() {
                                         },
                                         function (err, res) {
                                             if (err) throw err;
-                                            console.log(res.affectedRows + " product inserted!\n");
-                                            // Call updateProduct AFTER the INSERT completes
-                                            updateProduct();
+                                            console.log(res.affectedRows + " new role added!\n");
                                         }
                                     );
                                 })
@@ -147,9 +145,9 @@ function employment() {
                                     name: "manage"
                                 }])
                                 .then((res) => {
-                                    console.log("Inserting a new department...\n");
+                                    console.log("Inserting a new employee...\n");
                                     const query = connection.query(
-                                        "INSERT INTO department SET ?",
+                                        "INSERT INTO employee SET ?",
                                         {
                                             id: res.id,
                                             first_name: res.employeeFName,
@@ -159,9 +157,7 @@ function employment() {
                                         },
                                         function (err, res) {
                                             if (err) throw err;
-                                            console.log(res.affectedRows + " product inserted!\n");
-                                            // Call updateProduct AFTER the INSERT completes
-                                            updateProduct();
+                                            console.log(res.affectedRows + " new employee added!\n");
                                         }
                                     );
                                 })
@@ -179,18 +175,27 @@ function employment() {
                                 "Roles",
                                 "Employees"
                             ],
-                            name: "selector"
+                            name: "view"
                         }
                     )
                     .then((res) => {
-                        if (res.selector === "Departments") {
-
+                        if (res.view === "Departments") {
+                            connection.query("SELECT * FROM department", function (err, results) {
+                                if (err) throw err;
+                                console.log(results)
+                            })
                         }
-                        else if (res.selector === "Roles") {
-
+                        else if (res.view === "Roles") {
+                            connection.query("SELECT * FROM employee_role", function (err, results) {
+                                if (err) throw err;
+                                console.log(results)
+                            })
                         }
-                        else if (res.selector === "Employees") {
-
+                        else if (res.view === "Employees") {
+                            connection.query("SELECT * FROM employee", function (err, results) {
+                                if (err) throw err;
+                                console.log(results)
+                            })
                         }
                     })
             }
@@ -199,25 +204,56 @@ function employment() {
                     .prompt(
                         {
                             type: "list",
-                            message: "What would you like to update.",
+                            message: "Who would you like to update.",
                             choices: [
-                                "Departments",
-                                "Roles",
-                                "Employees"
+                                "placeholder",
+                                "placeholder",
+                                "placeholder"
                             ],
-                            name: "selector"
+                            name: "role_update"
                         }
                     )
                     .then((res) => {
-                        if (res.selector === "Departments") {
+                        const name = res.role_update
+                        inquirer
+                            .prompt(
+                                {
+                                    type: "list",
+                                    message: "What role would you like to change to.",
+                                    choices: [
+                                        "placeholder",
+                                        "placeholder",
+                                        "placeholder"
+                                    ],
+                                    name: "role_update"
+                                }
+                            )
+                            .then((res) => {
 
-                        }
-                        else if (res.selector === "Roles") {
+                                var query = connection.query(
+                                    "UPDATE products SET ? WHERE ?",
+                                    [
+                                        {
+                                            role_id: res.role_update
+                                        },
+                                        {
+                                            first_name: name
+                                        }
+                                    ],
+                                    function (err, res) {
+                                        if (err) throw err;
+                                        console.log(res.affectedRows + " name updated!\n");
+                                    }
+                            )})
+                        // if (res.selector === "Departments") {
 
-                        }
-                        else if (res.selector === "Employees") {
+                        // }
+                        // else if (res.selector === "Roles") {
 
-                        }
+                        // }
+                        // else if (res.selector === "Employees") {
+
+                        // }
                     })
             }
         })
